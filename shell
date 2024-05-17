@@ -1,0 +1,87 @@
+1. 书本P10  例 1-5  键盘输入两个数
+练习题：从键盘输入两个整数，计算这两个整数之和或积并输出。
+
+read -p “input num: “ n1 n2
+sum=$(($n1+$n2))
+echo $sum”
+
+
+2. 书本 P31 例 2-11 判断用户是否存在   
+练习题：从键盘输入用户名，判断当前用户是否存在。
+read -p “input name: ” user 
+    id $user &>/dev/null 
+    if [ $? -ne 0 ];then
+      echo “system not has user”
+else
+  echo “system has user”
+fi  
+
+3. 书本P42  例 3-5 或 P52 例3-11  循环读取文本  批量创建用户
+练习题：使用循环语句实现批量用户创建，用户和密码放在文本中。52页
+IFS=$’\n’
+for line in `cat user1.txt`
+do
+user=`echo “$line” | awk  ‘{print $1}’`
+pass=`echo “$line” | awk ‘{print $2}`
+id $user &>/dev/null
+if [ $? -ne 0 ];then
+useradd $user
+echo “$pass” | passwd –stdin $user &>/dev/null
+if [ $? -eq 0 ];then
+echo “$user is created”
+fi
+else
+echo “system has user”
+fi
+done
+
+
+
+
+
+4. 第四章  遍历数组实现统计数量
+   练习题：使用数组实现班级成绩情况统计，要求统计分数大于80分，分数存放到数组中。班级成绩文本文件如下：
+   名字    班级
+
+i=0
+while read line
+do
+	score=`echo $line | awk ‘{print $2}’`
+	if [ $scroe -gt 80 ];then
+	array[i]=$score
+	let i++
+	fi
+done < scroe.txt
+echo “>80: $i,${array[*]}”
+
+
+5.书本 P79 例 5-5  数据加工函数定义 
+  练习题：对输入普通数组偶数或奇数项（普通数组中索引值为奇数或者偶数）扩大5倍，例如奇数项，输入数组array1（1 2 3 4 5 6 7），输出数组array1（1 10 3 20 5 30 7）
+
+
+num=($*)
+array(){
+	local arr=($*)
+	local i
+	for((i=1;i<$#;))
+	do
+		arr[$i]=$((${arr[$i]}*5))
+		let i+=2
+	done
+	echo “${arr[*]}”
+}
+echo ${num[*]}
+
+6.书本P98 例 6-6
+egrep‘([0-9]{1,3}\.){3}[0-9]{1,3}’/etc/sysconfig/network-scripts/ifcfg-eth0 (enp0s3)
+
+
+
+7.书本P108 例 7-6  注意：以root开头删除与再加5行删除
+sed –r ‘/^root/,+5d’ /etc/passwd(删除包括root，共6行)
+
+8.练习题： 使用awk实现，统计系统中系统用户数量（UID 大于0 并且 小于500）与普通用户数量（UID 大于500）    
+
+
+awk –F: ‘{if ($3>0 && $3<500) {i++} else {if ($3>500) {j++}}} 
+END{print “xitong: “i;print “putong: “j}’ /etc/passwd
